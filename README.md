@@ -21,6 +21,6 @@ We also sequenced the RNA of the WT (time 0) and the evolved populations after 1
 -Rscript H2O2_binary_sensitivity_clusters_Differential_expression_analysis.r
   - Dependencies: r/4.2.2 and packages "DESeq2", "ggplot2", "dplyr" and "ggrepel"
 
--The reference fasta sequences and gtf files
+-The reference fasta and gff3 files
 
 -The list of samples
