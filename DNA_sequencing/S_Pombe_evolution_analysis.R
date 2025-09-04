@@ -19,7 +19,7 @@ output_workspace <- "C:/Users/arnau/Documents/S_Pombe/"
 #name of the depth report file 
 depth_report_filename <- "common_depth_report.csv"
 #name of the reference genome fasta file
-fasta_refseq_filename <- "Schizosaccharomyces_pombe_all_chromosomes.fa"
+fasta_refseq_filename <- "Schizosaccharomyces_pombe_all_chromosomes.fasta"
 
 #Get list of samples
 lst_samples <- unname(sapply(X = (sapply(X = read.csv2(file = paste0(output_workspace,"lst_samples.txt"),sep = "\t",header = FALSE,stringsAsFactors = FALSE)[1], FUN=function(x) gsub(pattern = output_workspace,replacement = "",x,fixed = TRUE))),FUN=function(x) gsub(pattern = "_preprocessed_sorted.bam",replacement = "",x,fixed = TRUE)))
@@ -1065,7 +1065,7 @@ ggplot(data = df_nb_UNIQUE_variants_per_pop,mapping = aes(x=factor(population,v_
 ggsave(filename = "Fixation_bias_by_variant_type2_across_populations.eps", path=output_workspace, width = 25/2.54, height = 20/2.54, device = cairo_ps)
 ggsave(filename = "Fixation_bias_by_variant_type2_across_populations.svg", path=output_workspace, width = 25/2.54, height = 20/2.54, device = svg)
 
-#Recreate the  figure in Bergström et al., 2014
+#Recreate the  figure in BergstrÃ¶m et al., 2014
 palette_variant_type_Bergstrom_et_al_2014 <- c("#CD9462","#CD7BC5","#00A473","#E68B08","#0073B4")
 df_nb_UNIQUE_variants_per_pop$var_type_Bergstrom_et_al <- ifelse(test = df_nb_UNIQUE_variants_per_pop$var_type2 %in% c("SNV in introns","SNV in UTR","SNV in other noncoding regions","Indel in other noncoding regions","Indel in UTR","Indel in introns"),yes = "noncoding",no = ifelse(test = df_nb_UNIQUE_variants_per_pop$var_type2 %in% c("Indel in protein-coding genes"),yes = "indel in coding regions",no = df_nb_UNIQUE_variants_per_pop$var_type2))
 ggplot(data = df_nb_UNIQUE_variants_per_pop,mapping = aes(x=factor(population,v_pop_order),y=proportion)) + geom_col(mapping = aes(fill=factor(var_type_Bergstrom_et_al,levels=c("noncoding","synonymous","missense","nonsense","indel in coding regions")))) + xlab("Population") + ylab("Proportion") +
@@ -2344,7 +2344,7 @@ df_per_sample_indel_bias2 <- df_per_sample_indel_bias %>%
 library(genemodel)
 
 # Convert the pyk1 chromosome and the gene to Biostrings objects
-the_genome_name <- paste0(output_workspace,"ChrI_Spom.fa")
+the_genome_name <- paste0(output_workspace,"ChrI_Spom.fasta")
 the_genome <- Biostrings::readDNAStringSet(the_genome_name)
 the_gene_name <- "pyk1"
 pyk1_start <- subset(df_loci_annotations,the_product==the_gene_name)$start
@@ -2418,7 +2418,7 @@ for (current_pop_mut_id in 1:nrow(Table_pyk1_unique_pop_muts)){
 library("gggenomes")
 gggenomes(paste0(output_workspace,"Schizosaccharomyces_pombe_all_chromosomes.gff3")) + geom_gene() 
 #import gene info
-#s0 <- read_seqs(paste0(output_workspace,"Schizosaccharomyces_pombe_all_chromosomes.fa"))
+#s0 <- read_seqs(paste0(output_workspace,"Schizosaccharomyces_pombe_all_chromosomes.fasta"))
 g0 <- read_feats(paste0(output_workspace,"pyk1_S_pombe_.gff3"))
 #mutations
 v0 <- tibble::tibble(file_id=rep("pyk1_S_~",nrow(Table_pyk1_unique_pop_muts)),
@@ -2519,3 +2519,4 @@ lolliplot(sample.gr, features, legend="legend")
 #save session
 library("session")
 save.session(file = paste0(output_workspace,"S_Pombe_evo.Rda"))
+
