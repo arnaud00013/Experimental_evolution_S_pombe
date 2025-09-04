@@ -18,7 +18,7 @@ def run_core_iPMVC(wp_path,current_sample, nb_t_profiling):
 	os.system("fastp -i {0}_R1.fastq -I {0}_R2.fastq -o {0}_trimmed_1.fastq -O {0}_trimmed_2.fastq --correction --overlap_diff_limit 4 --length_limit 400 --cut_front --cut_tail --trim_poly_g --dedup --dup_calc_accuracy 4 --detect_adapter_for_pe --thread {1}".format(current_sample, nb_t_profiling))
 	##os.system("prinseq-lite.pl -fastq {0}_trimmed_1.fastq -fastq2 {0}_trimmed_2.fastq -lc_method entropy -lc_threshold 60 -out_good {0}_trimmed_lcfiltered -out_bad {0}_trimmed_bad -out_format 1".format(current_sample))
 	#remove reads that map better to yeast species that could have been potential sources of contamination
-	os.system("bbsplit.sh in1={1}_trimmed_1.fastq in2={1}_trimmed_2.fastq ref=Schizosaccharomyces_pombe_all_chromosomes.fa,S_cerevisiae_YJM978.fa,C_glabrata.fa,K_lactis_NRRL-Y-1140.fa,Pichia_pastoris.fa,S_paradoxus_IFO1804.fa basename={1}_%_reads_trimmed_R#.fastq outu1={1}_unmapped_to_yeast_species_R1.fq outu2={1}_unmapped_to_yeast_species_R2.fq maxindel=35 usejni=t ambiguous2=\"all\"".format(wp_path, current_sample))
+	os.system("bbsplit.sh in1={1}_trimmed_1.fastq in2={1}_trimmed_2.fastq ref=Schizosaccharomyces_pombe_all_chromosomes.fasta,S_cerevisiae_YJM978.fasta,C_glabrata.fasta,K_lactis_NRRL-Y-1140.fasta,Pichia_pastoris.fasta,S_paradoxus_IFO1804.fasta basename={1}_%_reads_trimmed_R#.fastq outu1={1}_unmapped_to_yeast_species_R1.fq outu2={1}_unmapped_to_yeast_species_R2.fq maxindel=35 usejni=t ambiguous2=\"all\"".format(wp_path, current_sample))
 	#Move the S_pombe processed fastq in the samples/ repertory
 	os.system("mv {0}{1}_Schizosaccharomyces_pombe_all_chromosomes_reads_trimmed_R1.fastq {0}samples/{1}_Schizosaccharomyces_pombe_all_chromosomes_reads_trimmed_R1.fastq".format(wp_path, current_sample))
 	os.system("mv {0}{1}_Schizosaccharomyces_pombe_all_chromosomes_reads_trimmed_R2.fastq {0}samples/{1}_Schizosaccharomyces_pombe_all_chromosomes_reads_trimmed_R2.fastq".format(wp_path, current_sample))
@@ -34,7 +34,7 @@ def run_core_iPMVC(wp_path,current_sample, nb_t_profiling):
 	os.system("rm {0}{1}_trimmed_1.fastq".format(wp_path, current_sample))
 	os.system("rm {0}{1}_trimmed_2.fastq".format(wp_path, current_sample))
 	#Align the reads to the reference genome
-	os.system("bwa mem {0}Schizosaccharomyces_pombe_all_chromosomes.fa {0}samples/{1}_Schizosaccharomyces_pombe_all_chromosomes_reads_trimmed_R1.fastq {0}samples/{1}_Schizosaccharomyces_pombe_all_chromosomes_reads_trimmed_R2.fastq -t {2} > {0}bam/{1}_preprocessed.sam".format(wp_path, current_sample, nb_t_profiling))
+	os.system("bwa mem {0}Schizosaccharomyces_pombe_all_chromosomes.fasta {0}samples/{1}_Schizosaccharomyces_pombe_all_chromosomes_reads_trimmed_R1.fastq {0}samples/{1}_Schizosaccharomyces_pombe_all_chromosomes_reads_trimmed_R2.fastq -t {2} > {0}bam/{1}_preprocessed.sam".format(wp_path, current_sample, nb_t_profiling))
 	#Compress, sort and filter alignment
 	print("samtools view -bS {0}bam/{1}_preprocessed.sam > {0}bam/{1}_preprocessed.bam".format(wp_path, current_sample))
 	os.system("samtools view -bS {0}bam/{1}_preprocessed.sam > {0}bam/{1}_preprocessed.bam".format(wp_path, current_sample))
@@ -44,9 +44,9 @@ def run_core_iPMVC(wp_path,current_sample, nb_t_profiling):
 	#Remove PCR duplicates only if the method was shotgun sequencing
 	print(("java -jar $EBROOTPICARD/picard.jar MarkDuplicates I={0}bam/{1}_preprocessed_sorted.bam O={0}bam/{1}_preprocessed_sorted_noduplicates.bam M={0}last_marked_dupl.txt REMOVE_DUPLICATES=true".format(wp_path, current_sample)))
 	os.system("java -jar $EBROOTPICARD/picard.jar MarkDuplicates I={0}bam/{1}_preprocessed_sorted.bam O={0}bam/{1}_preprocessed_sorted_noduplicates.bam M={0}last_marked_dupl.txt REMOVE_DUPLICATES=true".format(wp_path, current_sample))
-	print(("samtools mpileup -B -f {0}Schizosaccharomyces_pombe_all_chromosomes.fa -d 0 {0}bam/{1}_preprocessed_sorted_noduplicates.bam > {0}pileup/{1}.pileup".format(wp_path, current_sample)))
-	os.system("samtools mpileup -B -f {0}Schizosaccharomyces_pombe_all_chromosomes.fa {0}bam/{1}_preprocessed_sorted_noduplicates.bam > {0}pileup/{1}.pileup".format(wp_path, current_sample))
-	#os.system("samtools mpileup -B -f {0}Schizosaccharomyces_pombe_all_chromosomes.fa {0}bam/{1}_preprocessed_sorted.bam > {0}pileup/{1}.pileup".format(wp_path, current_sample))
+	print(("samtools mpileup -B -f {0}Schizosaccharomyces_pombe_all_chromosomes.fasta -d 0 {0}bam/{1}_preprocessed_sorted_noduplicates.bam > {0}pileup/{1}.pileup".format(wp_path, current_sample)))
+	os.system("samtools mpileup -B -f {0}Schizosaccharomyces_pombe_all_chromosomes.fasta {0}bam/{1}_preprocessed_sorted_noduplicates.bam > {0}pileup/{1}.pileup".format(wp_path, current_sample))
+	#os.system("samtools mpileup -B -f {0}Schizosaccharomyces_pombe_all_chromosomes.fasta {0}bam/{1}_preprocessed_sorted.bam > {0}pileup/{1}.pileup".format(wp_path, current_sample))
 	os.system("java -jar $EBROOTVARSCAN/VarScan.v2.4.2.jar pileup2snp {0}pileup/{1}.pileup --min-coverage 5 --min-reads2 2 --min-var-freq 0.05 > {0}variant_analysis/variants_{1}.tab".format(wp_path, current_sample))
 	#Call indels
 	os.system("java -jar $EBROOTVARSCAN/VarScan.v2.4.2.jar pileup2indel {0}pileup/{1}.pileup --min-coverage 5 --min-reads2 2 --min-var-freq 0.05 > {0}variant_analysis/indels_variants_{1}.tab".format(wp_path, current_sample))
