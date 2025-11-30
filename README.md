@@ -18,8 +18,9 @@ We also sequenced the RNA of the WT (time 0) and the evolved populations after 1
 - sbatch submit_RNA_seq_counts.sh 
   - Dependencies: StdEnv/2023, fastqc/0.12.1, fastp/0.24.0, bbmap/39.06, subread/2.0.6, star/2.7.11b, samtools/1.20 and r/4.2.2
 
--Rscript H2O2_binary_sensitivity_clusters_Differential_expression_analysis.r
+-Rscript Differential_expression_analysis_H2O2_sensitivity_clusters.r
   - Dependencies: r/4.2.2 and packages "DESeq2", "ggplot2", "dplyr" and "ggrepel"
+  - All the data and figures created by this script can easily be loaded with the Rsession data file "Differential_expression_analysis_H2O2_sensitivity_clusters.Rda"
 
 -The reference fasta and gff3 files
 
